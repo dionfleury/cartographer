@@ -1,6 +1,6 @@
 import reactLogo from "../assets/react.svg"
 
-import { Group, Flex } from "@mantine/core"
+import { Title, Group, Flex } from "@mantine/core"
 
 import { ThemeSwitcher } from "./ThemeSwitcher"
 
@@ -16,7 +16,7 @@ export const Header = () =>
                     <a href="https://reactjs.org" target="_blank">
                         <img src={reactLogo} className="logo react" alt="React logo" />
                     </a>
-                    <span>Cartographer</span>
+                    <Title order={1}>Cartographer</Title>
                 </Group>
 
 

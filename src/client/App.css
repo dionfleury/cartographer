@@ -3,6 +3,25 @@
   width: 100%;
 }
 
+.mantine-Grid-inner {
+  height: 100%;
+}
+
+[data-mantine-color-scheme="light"] .bg-darker {
+  background-color: var(--mantine-color-gray-0);
+}
+
+[data-mantine-color-scheme="dark"] .bg-darker {
+  background-color: var(--mantine-color-dark-8);
+}
+
+/* [data-mantine-color-scheme="light"] .mantine-Tabs-tab:not([data-active]) {
+  background-color: var(--mantine-color-gray-0);
+}
+
+[data-mantine-color-scheme="dark"] .mantine-Tabs-tab:not([data-active]) {
+  background-color: var(--mantine-color-dark-8);
+} */
 
 /* #root {
   max-width: 1280px;
