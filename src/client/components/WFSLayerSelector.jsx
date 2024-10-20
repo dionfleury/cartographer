@@ -37,9 +37,9 @@ export const WFSLayerSelector = ( { onLayerSelected } ) =>
                 const typename = featuretype.getElementsByTagName( "Name" )[ 0 ].textContent
                 const workspace = typename.split( ":" )[ 0 ]
                 const title = featuretype.getElementsByTagName( "Title" )[ 0 ].textContent
-                const CRS = featuretype.getElementsByTagName( "DefaultCRS" )[ 0 ].textContent.replace( /.*EPSG::(.*)/, "$1" )
+                const CRS = featuretype.getElementsByTagName( "DefaultCRS" )[ 0 ].textContent.replace( /.*EPSG::(.*)/, "EPSG:$1" )
                 // const abstract = featuretype.getElementsByTagName( "Abstract" )[ 0 ].textContent
-                const getfeature_url = `${wfsRef.current.value}?service=WFS&version=1.1.0&request=getFeature&typename=${typename}&outputFormat=application/json&srsname=EPSG:${CRS}`
+                const getfeature_url = `${wfsRef.current.value}?service=WFS&version=1.1.0&request=getFeature&typename=${typename}&outputFormat=application/json&srsname=${CRS}`
                 const describefeature_url = `${wfsRef.current.value}?service=WFS&version=1.1.0&request=DescribeFeatureType&typename=${typename}&outputFormat=application/json`
 
                 featurelayers[ title ] = { workspace, title, typename, CRS, getfeature_url, describefeature_url }
