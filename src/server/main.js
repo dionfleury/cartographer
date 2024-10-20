@@ -2,8 +2,6 @@ import express from "express"
 import ViteExpress from "vite-express"
 import cors from "cors"
 
-import 'dotenv/config'
-
 ViteExpress.config( { mode: process.env.NODE_ENV } )
 
 const app = express()

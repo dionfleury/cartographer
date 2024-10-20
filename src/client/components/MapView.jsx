@@ -18,8 +18,9 @@ export const MapView = ( { layer, style } ) =>
 
     const osmLayer = new TileLayer( { preload: Infinity, source: new OSM() } )
 
+    // TODO implement projection handling for GeoJSON sources
     const [ wfsSource ] = useState( new VectorSource( {
-        format: new GeoJSON(),
+        format: new GeoJSON(), //TODO null this and implement format creation in useEffect Hook
         url: null,
         strategy: bboxStrategy
     } ) )
@@ -32,6 +33,7 @@ export const MapView = ( { layer, style } ) =>
     const [ map ] = useState( new Map( {
         layers: [ osmLayer, wfsLayer ],
         view: new View( {
+            projection: 'EPSG:3857',
             center: [ 0, 0 ],
             zoom: 0,
         } ),
