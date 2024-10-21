@@ -74,7 +74,11 @@ export const MapView = ( { layer, style } ) =>
     }, [ layer, style, wfsSource, wfsLayer ] )
 
 
-    useEffect( () => { return () => map.setTarget( "map" ) }, [ map ] )
+    useEffect( () =>
+    {
+        map.setTarget( "map" )
+        return () => map.setTarget( null )
+    }, [ map ] )
 
     return (
         <Flex direction="column" p="4px" h="100%">
