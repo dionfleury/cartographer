@@ -36,7 +36,7 @@ function App()
           </Flex>
         </Grid.Col>
         <Grid.Col span={3}>
-          <CodeEditorPanel />
+          <CodeEditorPanel style={currentStyle} />
         </Grid.Col>
         <Grid.Col h="100%" span={5}>
           <DataPreviewPanel layer={selectedLayer} style={currentStyle} />

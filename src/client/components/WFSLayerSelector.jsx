@@ -5,6 +5,9 @@ import { useRef, useState } from "react"
 import { notifications } from '@mantine/notifications'
 import { useDisclosure } from "@mantine/hooks"
 
+import { generateDefaultStyle } from "../scripts/defaultstyles"
+import { getPrimitiveGeometryType } from "../scripts/helpers"
+
 export const WFSLayerSelector = ( { onLayerSelected } ) =>
 {
     const wfsRef = useRef()
@@ -99,7 +102,10 @@ export const WFSLayerSelector = ( { onLayerSelected } ) =>
         // This breaks if there's ever more than one geometry on a feature, but you shouldn't be using this app if that's the case.
         const geometryType = schema.find( column => /gml:\w+/.test( column.type ) ).localType
 
-        onLayerSelected( { ...selectedLayer, schema, geometryType } )
+        const defaultStyle = generateDefaultStyle( geometryType )
+        const primitiveGeometryType = getPrimitiveGeometryType( geometryType )
+
+        onLayerSelected( { ...selectedLayer, schema, geometryType, primitiveGeometryType, defaultStyle } )
     }
 
 

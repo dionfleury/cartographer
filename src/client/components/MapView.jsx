@@ -56,22 +56,9 @@ export const MapView = ( { layer, style } ) =>
         wfsSource.setUrl( ( extent ) => { return ( layer.getfeature_url + "&bbox=" + extent.join( ',' ) + ',EPSG:3857' ) } )
         wfsSource.refresh()
 
-        let style = DefaultPolygonStyle // use Polygon as default
-        switch ( layer.geometryType )
-        {
-            case "Point":
-            case "MultiPoint":
-                style = DefaultPointStyle
-                break
-            case "LineString":
-            case "MultiLineString":
-                style = DefaultLineStyle
-                break
-        }
+        wfsLayer.setStyle( layer.defaultStyle )
 
-        wfsLayer.setStyle( style )
-
-    }, [ layer, style, wfsSource, wfsLayer ] )
+    }, [ layer, wfsSource, wfsLayer ] )
 
 
     useEffect( () =>

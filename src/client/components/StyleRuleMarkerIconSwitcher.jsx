@@ -29,14 +29,14 @@ const options = markeroptions.map( ( entry ) =>
 export const StyleRuleMarkerIconSwitcher = ( { stroke, fill, onIconChange } ) =>
 {
     const [ selectedShape, setSelectedShape ] = useState( IconCircle )
-    const [ hasFill, setHasFill ] = useState( true )
     const combobox = useCombobox( { onDropdownClose: () => combobox.resetSelectedOption(), } )
 
 
     function handleValueChange( value )
     {
-        setSelectedShape( value );
-        ( value === IconPlus || value === IconX ) ? onIconChange( false ) : onIconChange( true )
+        setSelectedShape( value )
+        onIconChange( { icon: value.displayName, hasFill: ( value === IconPlus || value === IconX ) ? false : true } )
+
         combobox.closeDropdown()
     }
 
