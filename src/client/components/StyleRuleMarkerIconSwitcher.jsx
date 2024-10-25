@@ -40,6 +40,11 @@ export const StyleRuleMarkerIconSwitcher = ( { stroke, fill, onIconChange } ) =>
         combobox.closeDropdown()
     }
 
+    function handleIconChange( event )
+    {
+        // event.stopPropagation()
+        combobox.toggleDropdown()
+    }
 
     return (
         <>
@@ -51,7 +56,7 @@ export const StyleRuleMarkerIconSwitcher = ( { stroke, fill, onIconChange } ) =>
                 onOptionSubmit={handleValueChange}
             >
                 <Combobox.Target>
-                    <ActionIcon variant="subtle" color="red" size="xl" onClick={() => combobox.toggleDropdown()}>
+                    <ActionIcon variant="subtle" color="red" size="xl" onClick={handleIconChange}>
                         <StyleRuleMakerIcon icon={selectedShape} stroke={stroke} fill={fill} />
                     </ActionIcon>
                 </Combobox.Target>

@@ -1,47 +1,48 @@
 import { Tabs, Space, Flex, rem, useMantineColorScheme } from '@mantine/core'
-import { IconIndentIncrease, IconCode, IconCodeDots, IconLayersSubtract } from '@tabler/icons-react'
+import { IconIndentIncrease, IconCode, IconCodeDots, IconLayersSubtract, IconBrandJavascript } from '@tabler/icons-react'
 
 import { Editor } from "@monaco-editor/react"
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 import { generateSLDStyle } from '../scripts/style'
+import { useMapStylingContext } from '../context/MapStylingContext'
 
 
-export const CodeEditorPanel = ( { style } ) =>
+export const CodeEditorPanel = () =>
 {
     const iconStyle = { width: rem( 16 ), height: rem( 16 ) }
-
-    generateSLDStyle()
 
     const { colorScheme, setColorScheme } = useMantineColorScheme()
 
     const [ olStyle, setOlStyle ] = useState( null )
 
+    const { style } = useMapStylingContext()
+
+    const theme = colorScheme == 'dark' ? 'vs-dark' : 'light'
+
+    const editorRefJSLD = useRef( null )
+    const editorRefSLD = useRef( null )
+    const editorRefYSLD = useRef( null )
+    const editorRefMapBox = useRef( null )
+    const editorRefOL = useRef( null )
+
+    const handleFormat = ( editorRef ) => { if ( editorRef.current ) editorRef.current.getAction( 'editor.action.formatDocument' ).run() }
+
+    const handleEditorMount = ( editor, monaco, editorRef ) => { editorRef.current = editor }
+
     useEffect( () =>
     {
-        if ( style == null ) return
-
-        console.log( style )
-        let openLayersStyle = "import { Style, Fill, Stroke } from 'ol/style.js'\n\n"
-        for ( const entry of style )
-        {
-            const declaration = `const style = new Style({\n`
-            const fill = `\tfill: new Fill("${entry.rule.fill.color}"),\n`
-            const stroke = `\tstroke: new Stroke("${entry.rule.stroke.color}"),\n`
-            const close = "})"
-            openLayersStyle += declaration
-            openLayersStyle += fill
-            openLayersStyle += stroke
-            openLayersStyle += close
-
-            setOlStyle( openLayersStyle )
-        }
-
+        if ( style == {} ) return
+        handleFormat( editorRefJSLD )
     }, [ style ] )
 
+
     return (
-        <Tabs defaultValue="sld_1" h="100%">
+        <Tabs defaultValue="JSLD" h="100%">
             <Tabs.List>
+                <Tabs.Tab value="JSLD" leftSection={<IconBrandJavascript style={iconStyle} />}>
+                    JSLD
+                </Tabs.Tab>
                 <Tabs.Tab value="sld_1" leftSection={<IconCode style={iconStyle} />}>
                     SLD 1.0
                 </Tabs.Tab>
@@ -56,17 +57,40 @@ export const CodeEditorPanel = ( { style } ) =>
                 </Tabs.Tab>
             </Tabs.List>
 
+            <Tabs.Panel value="JSLD" h="calc(100% - 38px)">
+                <Editor
+                    value={JSON.stringify( style )}
+                    height="100%"
+                    defaultLanguage='json'
+                    theme={theme}
+                    onMount={( editor, monaco ) => handleEditorMount( editor, monaco, editorRefJSLD )} />
+            </Tabs.Panel>
             <Tabs.Panel value="sld_1" h="calc(100% - 38px)">
-                <Editor height="100%" defaultLanguage='xml' theme={colorScheme == 'dark' ? 'vs-dark' : 'light'} />
+                <Editor
+                    height="100%"
+                    defaultLanguage='xml'
+                    theme={theme}
+                    onMount={( editor, monaco ) => handleEditorMount( editor, monaco, editorRefSLD )} />
             </Tabs.Panel>
             <Tabs.Panel value="YSLD" h="calc(100% - 38px)">
-                <Editor height="100%" defaultLanguage='yaml' theme={colorScheme == 'dark' ? 'vs-dark' : 'light'} />
+                <Editor
+                    height="100%" defaultLanguage='yaml'
+                    theme={theme}
+                    onMount={( editor, monaco ) => handleEditorMount( editor, monaco, editorRefSLD )} />
             </Tabs.Panel>
             <Tabs.Panel value="Mapbox" h="calc(100% - 38px)">
-                <Editor height="100%" defaultLanguage='json' theme={colorScheme == 'dark' ? 'vs-dark' : 'light'} />
+                <Editor
+                    height="100%"
+                    defaultLanguage='json'
+                    theme={theme}
+                    onMount={( editor, monaco ) => handleEditorMount( editor, monaco, editorRefSLD )} />
             </Tabs.Panel>
             <Tabs.Panel value="OpenLayers" h="calc(100% - 38px)">
-                <Editor value={olStyle} height="100%" defaultLanguage='javascript' theme={colorScheme == 'dark' ? 'vs-dark' : 'light'} />
+                <Editor
+                    value={olStyle}
+                    height="100%"
+                    defaultLanguage='javascript'
+                    theme={colorScheme == 'dark' ? 'vs-dark' : 'light'} />
             </Tabs.Panel>
         </Tabs>
     )

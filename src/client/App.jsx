@@ -10,6 +10,7 @@ import { StylingPanel } from "./components/StylingPanel"
 import { DataPreviewPanel } from "./components/DataPreviewPanel"
 import { WFSLayerSelector } from "./components/WFSLayerSelector"
 
+import { MapStylingContextProvider } from "./context/MapStylingContext"
 
 function App()
 {
@@ -28,21 +29,23 @@ function App()
     <div className="app">
       <Header />
 
-      <Grid gutter="0px" w="100vw" h="calc(100vh - 56px)">
-        <Grid.Col span={4}>
-          <Flex direction="column" align="stretch" h="100%">
-            <WFSLayerSelector onLayerSelected={handleLayerSelected} />
-            <StylingPanel layer={selectedLayer} onStyleChanged={handleStyleChanged} />
-          </Flex>
-        </Grid.Col>
-        <Grid.Col span={3}>
-          <CodeEditorPanel style={currentStyle} />
-        </Grid.Col>
-        <Grid.Col h="100%" span={5}>
-          <DataPreviewPanel layer={selectedLayer} style={currentStyle} />
-        </Grid.Col>
+      <MapStylingContextProvider>
+        <Grid gutter="0px" w="100vw" h="calc(100vh - 56px)">
+          <Grid.Col span={4}>
+            <Flex direction="column" align="stretch" h="100%">
+              <WFSLayerSelector onLayerSelected={handleLayerSelected} />
+              <StylingPanel layer={selectedLayer} onStyleChanged={handleStyleChanged} />
+            </Flex>
+          </Grid.Col>
+          <Grid.Col span={3}>
+            <CodeEditorPanel style={currentStyle} />
+          </Grid.Col>
+          <Grid.Col h="100%" span={5}>
+            <DataPreviewPanel layer={selectedLayer} style={currentStyle} />
+          </Grid.Col>
+        </Grid>
+      </MapStylingContextProvider>
 
-      </Grid>
     </div>
 
 

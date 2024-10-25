@@ -5,8 +5,11 @@ import { useRef, useState } from "react"
 import { notifications } from '@mantine/notifications'
 import { useDisclosure } from "@mantine/hooks"
 
-import { generateDefaultStyle } from "../scripts/defaultstyles"
+import { generateDefaultStyle, generateDefaultStyleObject } from "../scripts/defaultstyles"
 import { getPrimitiveGeometryType } from "../scripts/helpers"
+
+import { useDispatch } from "../context/MapStylingContext"
+
 
 export const WFSLayerSelector = ( { onLayerSelected } ) =>
 {
@@ -17,6 +20,8 @@ export const WFSLayerSelector = ( { onLayerSelected } ) =>
 
     const [ loading, setLoading ] = useState( false )
     const [ connected, setConnected ] = useState( false )
+
+    const dispatch = useDispatch()
 
     async function wfsGetCapabilitiesRequest()
     {
@@ -42,10 +47,10 @@ export const WFSLayerSelector = ( { onLayerSelected } ) =>
                 const title = featuretype.getElementsByTagName( "Title" )[ 0 ].textContent
                 const CRS = featuretype.getElementsByTagName( "DefaultCRS" )[ 0 ].textContent.replace( /.*EPSG::(.*)/, "EPSG:$1" )
                 // const abstract = featuretype.getElementsByTagName( "Abstract" )[ 0 ].textContent
-                const getfeature_url = `${wfsRef.current.value}?service=WFS&version=1.1.0&request=getFeature&typename=${typename}&outputFormat=application/json&srsname=${CRS}`
-                const describefeature_url = `${wfsRef.current.value}?service=WFS&version=1.1.0&request=DescribeFeatureType&typename=${typename}&outputFormat=application/json`
+                const getFeatureURL = `${wfsRef.current.value}?service=WFS&version=1.1.0&request=getFeature&typename=${typename}&outputFormat=application/json&srsname=${CRS}`
+                const describeFeatureURL = `${wfsRef.current.value}?service=WFS&version=1.1.0&request=DescribeFeatureType&typename=${typename}&outputFormat=application/json`
 
-                featurelayers[ title ] = { workspace, title, typename, CRS, getfeature_url, describefeature_url }
+                featurelayers[ title ] = { workspace, title, typename, CRS, getFeatureURL, describeFeatureURL }
 
                 layernames.push( featuretype.getElementsByTagName( "Title" )[ 0 ].textContent )
             }
@@ -98,7 +103,7 @@ export const WFSLayerSelector = ( { onLayerSelected } ) =>
 
         const selectedLayer = layers[ event ]
 
-        const schema = await wfsDescribeFeatureRequest( selectedLayer.describefeature_url )
+        const schema = await wfsDescribeFeatureRequest( selectedLayer.describeFeatureURL )
         // This breaks if there's ever more than one geometry on a feature, but you shouldn't be using this app if that's the case.
         const geometryType = schema.find( column => /gml:\w+/.test( column.type ) ).localType
 
@@ -106,6 +111,15 @@ export const WFSLayerSelector = ( { onLayerSelected } ) =>
         const primitiveGeometryType = getPrimitiveGeometryType( geometryType )
 
         onLayerSelected( { ...selectedLayer, schema, geometryType, primitiveGeometryType, defaultStyle } )
+
+        dispatch( {
+            type: 'setDataSource',
+            dataSource: { ...selectedLayer, schema, geometryType, primitiveGeometryType, defaultStyle }
+        } )
+        dispatch( {
+            type: 'setStyle',
+            style: generateDefaultStyleObject( primitiveGeometryType )
+        } )
     }
 
 
