@@ -14,13 +14,13 @@ import proj4 from 'proj4'
 import { register } from 'ol/proj/proj4'
 
 
-import { DefaultPointStyle, DefaultLineStyle, DefaultPolygonStyle } from '../scripts/defaultstyles'
 
 import { useMapStylingContext } from '../context/MapStylingContext'
+import { JSLDtoOpenLayers } from '../scripts/style'
 
-export const MapView = ( { layer, style } ) =>
+export const MapView = () =>
 {
-    const state = useMapStylingContext()
+    const { style, dataSource } = useMapStylingContext()
 
     // TODO: Add way of adding other projections at runtime
     proj4.defs( "EPSG:28992", "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.417,50.3319,465.552,-0.398957,0.343988,-1.8774,4.0725 +units=m +no_defs" )
@@ -38,7 +38,7 @@ export const MapView = ( { layer, style } ) =>
 
     const [ wfsLayer ] = useState( new VectorLayer( {
         source: wfsSource,
-        style: DefaultPolygonStyle
+        style: null
     } ) )
 
     const [ map ] = useState( new Map( {
@@ -53,12 +53,24 @@ export const MapView = ( { layer, style } ) =>
 
     useEffect( () =>
     {
-        if ( state.dataSource == {} ) return
-        setGeoJSONFormat( new GeoJSON( { featureProjection: state.dataSource.CRS } ) )
-        wfsSource.setUrl( ( extent ) => { return ( state.dataSource.getFeatureURL + "&bbox=" + extent.join( ',' ) + ',EPSG:3857' ) } )
+        if ( Object.keys( dataSource ).length === 0 ) return
+
+        // console.log( [ style, dataSource ] )
+
+        setGeoJSONFormat( new GeoJSON( { featureProjection: dataSource.CRS } ) )
+        wfsSource.setUrl( ( extent ) => { return ( dataSource.getFeatureURL + "&bbox=" + extent.join( ',' ) + ',EPSG:3857' ) } )
         wfsSource.refresh()
-        wfsLayer.setStyle(state.dataSource.defaultStyle)
-    }, [ state ] )
+
+        wfsLayer.setStyle( dataSource.defaultStyle )
+
+    }, [ dataSource ] )
+
+    useEffect( () =>
+    {
+        if ( Object.keys( style ).length === 0 ) return
+
+        wfsLayer.setStyle(JSLDtoOpenLayers(style))
+    }, [ style ] )
 
 
     useEffect( () =>

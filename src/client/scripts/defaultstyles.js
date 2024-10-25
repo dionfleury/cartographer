@@ -68,7 +68,7 @@ export function generateDefaultStyleObject( geometryType )
                 Mark: {
                     WellKnownName: "circle",
                     Fill: { color: "#646464", opacity: 0.25 },
-                    Stroke: { color: "#FF0000", opacity: 1, width: 1 }
+                    Stroke: { color: "#FF0000", opacity: 1, width: 1.25 }
                 }
             },
             Opacity: 1,
@@ -81,7 +81,7 @@ export function generateDefaultStyleObject( geometryType )
     {
         baseStyle.Rules[ 0 ].Symbolizers[ 0 ] = {
             _type: "LineSymbolizer",
-            Stroke: { color: "#FF0000", opacity: 1, width: 1 }
+            Stroke: { color: "#FF0000", opacity: 1, width: 1.25 }
         }
         return baseStyle
     }
@@ -89,7 +89,7 @@ export function generateDefaultStyleObject( geometryType )
     {
         baseStyle.Rules[ 0 ].Symbolizers[ 0 ] = {
             _type: "PolygonSymbolizer",
-            Stroke: { color: "#FF0000", opacity: 1, width: 1 },
+            Stroke: { color: "#FF0000", opacity: 1, width: 1.25 },
             Fill: { color: "#646464", opacity: 0.25 }
         }
         return baseStyle

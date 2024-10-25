@@ -40,9 +40,6 @@ export const StyleSymbolizer = ( { ruleIndex, symbolizerIndex, symbolizerObject 
 
     function handleMarkChange( event )
     {
-        // setHasFill( event.hasFill )
-        console.log( event )
-        // onRuleChanged( { pointMarker } )
         dispatch( {
             type: "setSymbolizer",
             ruleIndex,

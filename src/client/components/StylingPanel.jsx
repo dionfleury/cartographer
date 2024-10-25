@@ -21,8 +21,6 @@ export const StylingPanel = ( { layer, onStyleChanged } ) =>
     useEffect( () =>
     {
         if ( Object.keys( dataSource ).length == 0 ) return
-        console.log( style )
-        // setStyleRules( generateDefaultStyleRules( layer ) )
         const elements = style.Rules.map( ( rule, index ) =>
         {
             return ( <StyleRule key={index} ruleIndex={index} ruleObject={rule} /> )

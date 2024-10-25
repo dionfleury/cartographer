@@ -1,3 +1,10 @@
+import { Circle, RegularShape, Fill, Stroke, Style } from 'ol/style.js'
+
+import { FlatCircle, FlatShape, FlatFill, FlatStroke, FlatStyle, FlatStyleLike } from 'ol/style/flat'
+
+import { colorCodeToRGBA, degreesToRadians, opacityFromColorCode, pythagorasDiagonalFromSide } from './helpers'
+
+
 export function generateSLDStyle( rules, version )
 {
     const xmlHeader = '<?xml version="1.0" encoding="UTF-8"?>'
@@ -99,3 +106,45 @@ export type UserLayer = {
 
 }
 
+function generateFlatStyle( symbolizer ): FlatStyleLike
+{
+
+    if ( symbolizer.Graphic != undefined )
+    {
+        const mark = symbolizer.Graphic.Mark
+        const fillColor = colorCodeToRGBA( mark.Fill.color, mark.Fill.opacity )
+        const strokeColor = colorCodeToRGBA( mark.Stroke.color, mark.Stroke.opacity )
+        const strokeWidth = mark.Stroke.width
+        switch ( mark.WellKnownName )
+        {
+            case "circle": return { "circle-radius": 5, "circle-fill-color": fillColor, "circle-stroke-color": strokeColor, "circle-stroke-width": strokeWidth }
+            case "square": return { "shape-points": 4, "shape-radius": pythagorasDiagonalFromSide( 5 ), "shape-angle": degreesToRadians( 45 ), "shape-fill-color": fillColor, "shape-stroke-color": strokeColor, "shape-stroke-width": strokeWidth }
+            case "triangle": return { "shape-points": 3, "shape-radius": 5, "shape-fill-color": fillColor, "shape-stroke-color": strokeColor, "shape-stroke-width": strokeWidth }
+            case "star": return { "shape-points": 5, "shape-radius": 5, "shape-radius2": 2.5, "shape-fill-color": fillColor, "shape-stroke-color": strokeColor, "shape-stroke-width": strokeWidth }
+            case "cross": return { "shape-points": 4, "shape-radius": 5, "shape-radius2": 0.1, "shape-fill-color": fillColor, "shape-stroke-color": strokeColor, "shape-stroke-width": strokeWidth }
+            case "x": return { "shape-points": 4, "shape-radius": 5, "shape-radius2": 0.1, "shape-angle": degreesToRadians( 45 ), "shape-fill-color": fillColor, "shape-stroke-color": strokeColor, "shape-stroke-width": strokeWidth }
+        }
+    }
+    const style = {}
+    if ( symbolizer.Fill != undefined ) style[ "fill-color" ] = colorCodeToRGBA( symbolizer.Fill.color, symbolizer.Fill.opacity )
+    if ( symbolizer.Stroke != undefined )
+    {
+        style[ "stroke-color" ] = colorCodeToRGBA( symbolizer.Stroke.color, symbolizer.Stroke.opacity )
+        style[ "stroke-width" ] = symbolizer.Stroke.width
+    }
+    return style
+}
+
+
+export function JSLDtoOpenLayers( JSLDstyle )
+{
+
+    const rules = JSLDstyle.Rules.map( rule =>
+    {
+        return {
+            // filter: undefined, //TODO: Implement filter
+            style: rule.Symbolizers.map( generateFlatStyle )
+        }
+    } )
+    return rules
+}
