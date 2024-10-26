@@ -40,6 +40,9 @@ export function generateDefaultStyle( geometryType )
 
 export function generateDefaultStyleObject( geometryType )
 {
+    const defaultFill = { _type: "CssParameters", _prefix: "fill", color: "#646464", opacity: 0.25 }
+    const defualtStroke = { _type: "CssParameters", _prefix: "stroke", color: "#FF0000", opacity: 1, width: 1.25 }
+
     const baseStyle = {
         _type: "FeatureTypeStyle",
         // Name: "",
@@ -49,8 +52,8 @@ export function generateDefaultStyleObject( geometryType )
         Rules: [
             {
                 _type: "Rule",
-                Name: "",
-                Title: "",
+                Name: "Rule Name",
+                Title: "Rule Title",
                 // Abstract: "",
                 Filter: null,
                 // MinScaleDenominator: null,
@@ -60,38 +63,8 @@ export function generateDefaultStyleObject( geometryType )
             }
         ]
     }
-    if ( geometryType == "Point" )
-    {
-        baseStyle.Rules[ 0 ].Symbolizers[ 0 ] = {
-            _type: "PointSymbolizer",
-            Graphic: {
-                Mark: {
-                    WellKnownName: "circle",
-                    Fill: { color: "#646464", opacity: 0.25 },
-                    Stroke: { color: "#FF0000", opacity: 1, width: 1.25 }
-                }
-            },
-            Opacity: 1,
-            Size: 5,
-            Rotation: 0
-        }
-        return baseStyle
-    }
-    else if ( geometryType == "Line" )
-    {
-        baseStyle.Rules[ 0 ].Symbolizers[ 0 ] = {
-            _type: "LineSymbolizer",
-            Stroke: { color: "#FF0000", opacity: 1, width: 1.25 }
-        }
-        return baseStyle
-    }
-    else if ( geometryType == "Polygon" )
-    {
-        baseStyle.Rules[ 0 ].Symbolizers[ 0 ] = {
-            _type: "PolygonSymbolizer",
-            Stroke: { color: "#FF0000", opacity: 1, width: 1.25 },
-            Fill: { color: "#646464", opacity: 0.25 }
-        }
-        return baseStyle
-    }
+    if ( geometryType == "Point" ) baseStyle.Rules[ 0 ].Symbolizers[ 0 ] = { _type: "PointSymbolizer", Graphic: { Mark: { WellKnownName: "circle", Fill: defaultFill, Stroke: defualtStroke }, Opacity: 1, Size: 5, Rotation: 0 } }
+    else if ( geometryType == "Line" ) baseStyle.Rules[ 0 ].Symbolizers[ 0 ] = { _type: "LineSymbolizer", Stroke: defualtStroke }
+    else if ( geometryType == "Polygon" ) baseStyle.Rules[ 0 ].Symbolizers[ 0 ] = { _type: "PolygonSymbolizer", Stroke: defualtStroke, Fill: defaultFill }
+    return baseStyle
 }

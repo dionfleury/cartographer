@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react'
 
 import { MapView } from "./MapView"
 import { SchemaView } from './SchemaView'
+import { TableView } from './TableView'
+import { HistogramView } from './HistogramView'
 
 
 const iconStyle = { width: rem( 16 ), height: rem( 16 ) }
@@ -38,8 +40,10 @@ export const DataPreviewPanel = ( { layer } ) =>
                 <SchemaView layer={layer} />
             </Tabs.Panel>
             <Tabs.Panel value="Table" h="calc(100% - 38px)">
+                <TableView />
             </Tabs.Panel>
             <Tabs.Panel value="Histogram" h="calc(100% - 38px)">
+                <HistogramView />
             </Tabs.Panel>
         </Tabs>
     )

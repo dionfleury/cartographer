@@ -26,23 +26,39 @@ function mapStylingReducer( state, action )
     {
         switch ( action.type )
         {
-            case 'setDataSource':
+            case 'setDataSource': {
                 draft.dataSource = action.dataSource
-                // return { ...state, dataSource: action.dataSource }
-                break
-            case 'setStyle': {
-                draft.style = action.style
-                // return { ...state, style: action.style }
                 break
             }
-            case 'setSymbolizer':
+            case 'setStyle': {
+                draft.style = action.style
+                break
+            }
+            case 'setSymbolizer': {
                 draft.style.Rules[ action.ruleIndex ].Symbolizers[ action.symbolizerIndex ] = action.symbolizer
                 break
-
-            case 'addSymbolizer':
+            }
+            case 'addSymbolizer': {
                 const rule = draft.style.Rules[ action.ruleIndex ]
                 rule.Symbolizers.push( rule.Symbolizers[ rule.Symbolizers.length - 1 ] )
                 break
+            }
+            case 'removeSybolizer': {
+                draft.style.Rules[ action.ruleIndex ].Symbolizers.splice( action.symbolizerIndex )
+                break
+            }
+            case 'moveSymbolizerUp': {
+                const { symbolizerIndex, ruleIndex } = action
+                const symbolizers = draft.style.Rules[ ruleIndex ].Symbolizers;
+                [ symbolizers[ symbolizerIndex - 1 ], symbolizers[ symbolizerIndex ] ] = [ symbolizers[ symbolizerIndex ], symbolizers[ symbolizerIndex - 1 ] ]
+                break
+            }
+            case 'moveSymbolizerDown': {
+                const { symbolizerIndex, ruleIndex } = action
+                const symbolizers = draft.style.Rules[ ruleIndex ].Symbolizers;
+                [ symbolizers[ symbolizerIndex ], symbolizers[ symbolizerIndex + 1 ] ] = [ symbolizers[ symbolizerIndex + 1 ], symbolizers[ symbolizerIndex ] ]
+                break
+            }
             default:
                 return state
         }
@@ -53,5 +69,4 @@ const initialState = {
     dataSource: {},
     style: {},
     helloWorld: { message: "HelloWorld" }
-
 }

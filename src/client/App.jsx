@@ -31,13 +31,13 @@ function App()
 
       <MapStylingContextProvider>
         <Grid gutter="0px" w="100vw" h="calc(100vh - 56px)">
-          <Grid.Col span={4}>
+          <Grid.Col span={3}>
             <Flex direction="column" align="stretch" h="100%">
               <WFSLayerSelector onLayerSelected={handleLayerSelected} />
               <StylingPanel layer={selectedLayer} onStyleChanged={handleStyleChanged} />
             </Flex>
           </Grid.Col>
-          <Grid.Col span={3}>
+          <Grid.Col span={4}>
             <CodeEditorPanel style={currentStyle} />
           </Grid.Col>
           <Grid.Col h="100%" span={5}>

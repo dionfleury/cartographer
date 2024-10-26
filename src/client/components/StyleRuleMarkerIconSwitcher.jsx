@@ -5,19 +5,19 @@ import { IconCircle, IconSquare, IconTriangle, IconStar, IconPlus, IconX } from 
 import { StyleRuleMakerIcon } from "./StyleRuleMarkerIcon"
 
 const markeroptions = [
-    { name: 'Circle', icon: IconCircle, },
-    { name: 'Square', icon: IconSquare, },
-    { name: 'Triangle', icon: IconTriangle, },
-    { name: 'Star', icon: IconStar, },
-    { name: 'Cross', icon: IconPlus, },
-    { name: 'X', icon: IconX, }
+    { name: 'circle', iconName: IconCircle, },
+    { name: 'square', iconName: IconSquare, },
+    { name: 'triangle', iconName: IconTriangle, },
+    { name: 'star', iconName: IconStar, },
+    { name: 'cross', iconName: IconPlus, },
+    { name: 'x', iconName: IconX, }
 ]
 
 const options = markeroptions.map( ( entry ) =>
 {
-    const IconTagName = entry.icon
+    const IconTagName = entry.iconName
     return (
-        < Combobox.Option value={entry.icon} key={entry.name} >
+        < Combobox.Option value={entry.iconName} key={entry.name} >
             <Group>
                 <IconTagName></IconTagName>
                 {entry.name}
@@ -26,17 +26,16 @@ const options = markeroptions.map( ( entry ) =>
     )
 } )
 
-export const StyleRuleMarkerIconSwitcher = ( { stroke, fill, onIconChange } ) =>
+export const StyleRuleMarkerIconSwitcher = ( { stroke, fill, icon, onIconChange } ) =>
 {
-    const [ selectedShape, setSelectedShape ] = useState( IconCircle )
+    const [ selectedShape, setSelectedShape ] = useState( )
     const combobox = useCombobox( { onDropdownClose: () => combobox.resetSelectedOption(), } )
 
 
     function handleValueChange( value )
     {
-        setSelectedShape( value )
+        // setSelectedShape( value )
         onIconChange( { icon: value.displayName, hasFill: ( value === IconPlus || value === IconX ) ? false : true } )
-
         combobox.closeDropdown()
     }
 
@@ -57,7 +56,7 @@ export const StyleRuleMarkerIconSwitcher = ( { stroke, fill, onIconChange } ) =>
             >
                 <Combobox.Target>
                     <ActionIcon variant="subtle" color="gray" size="xl" onClick={handleIconChange}>
-                        <StyleRuleMakerIcon icon={selectedShape} stroke={stroke} fill={fill} />
+                        <StyleRuleMakerIcon icon={markeroptions.find( option => option.name === icon ).iconName } stroke={stroke} fill={fill} />
                     </ActionIcon>
                 </Combobox.Target>
 

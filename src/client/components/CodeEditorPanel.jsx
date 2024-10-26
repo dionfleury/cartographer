@@ -4,7 +4,7 @@ import { IconIndentIncrease, IconCode, IconCodeDots, IconLayersSubtract, IconBra
 import { Editor } from "@monaco-editor/react"
 import { useEffect, useState, useRef } from 'react'
 
-import { generateSLDStyle } from '../scripts/style'
+import { generateSLDStyle, JSLDtoSLD } from '../scripts/style'
 import { useMapStylingContext } from '../context/MapStylingContext'
 
 
@@ -30,10 +30,12 @@ export const CodeEditorPanel = () =>
 
     const handleEditorMount = ( editor, monaco, editorRef ) => { editorRef.current = editor }
 
+
     useEffect( () =>
     {
         if ( style == {} ) return
         handleFormat( editorRefJSLD )
+        // handleFormat( editorRefSLD )
     }, [ style ] )
 
 
@@ -67,6 +69,7 @@ export const CodeEditorPanel = () =>
             </Tabs.Panel>
             <Tabs.Panel value="sld_1" h="calc(100% - 38px)">
                 <Editor
+                    value={JSLDtoSLD( style )}
                     height="100%"
                     defaultLanguage='xml'
                     theme={theme}

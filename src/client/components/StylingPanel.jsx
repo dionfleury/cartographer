@@ -41,9 +41,6 @@ export const StylingPanel = ( { layer, onStyleChanged } ) =>
 
     }, [ style ] )
 
-
-
-
     return (
         <Flex direction="column" align="stretch" h="100%">
 

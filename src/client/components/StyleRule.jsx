@@ -27,7 +27,7 @@ export const StyleRule = ( { ruleIndex, ruleObject, colorFormat } ) =>
     }
 
 
-    const symbolizers = ruleObject.Symbolizers.map( ( symbolizer, index ) => ( <StyleSymbolizer key={index} ruleIndex={ruleIndex} symbolizerIndex={index} symbolizerObject={symbolizer} /> ) )
+    const symbolizers = ruleObject.Symbolizers.map( ( symbolizer, index ) => ( <StyleSymbolizer key={index} ruleIndex={ruleIndex} symbolizerIndex={index} lastSymbolizerIndex={ruleObject.Symbolizers.length - 1} symbolizerObject={symbolizer} /> ) )
 
     return (
         <Paper shadow="md" radius="md" p="md">

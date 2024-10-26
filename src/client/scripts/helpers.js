@@ -155,3 +155,32 @@ function hsl2rgb( h, s, l )
 export function degreesToRadians( degrees ) { return degrees * ( Math.PI / 180 ) }
 
 export function pythagorasDiagonalFromSide( side ) { return side * Math.SQRT2 }
+
+export function radiusToTriangleBase( radius ) { return radius * ( 3 / 2 ) }
+
+export function formatXML( xmlString )
+{
+    const PADDING = ' '.repeat( 2 )
+    const regEx = /(>)(<)(\/*)/g
+    let pad = 0
+
+    xmlString = xmlString.replace( regEx, '$1\r\n$2$3' )
+
+    return xmlString.split( '\r\n' ).map( ( node, index ) =>
+    {
+        let indent = 0
+
+        if ( node.match( /.+<\/\w[^>]*>$/ ) ) indent = 0
+        else if ( node.match( /^\s+>$/ ) ) pad -= 1
+        else if ( node.match( /^\w+(?::|=).+/ ) && pad < 2 ) pad = 1
+        else if ( node.match( /^<\/\w/ ) && pad > 0 ) pad -= 1
+        else if ( node.match( /^<\w[^>]*[^\/]>.*$/ ) ) indent = 1
+        else indent = 0
+
+        pad += indent
+
+        return PADDING.repeat( pad - indent ) + node
+    } ).join( '\r\n' )
+}
+
+
