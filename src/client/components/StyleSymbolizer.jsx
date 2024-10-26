@@ -1,27 +1,20 @@
-import { ColorInput, Group, Stack, Select, TextInput, Accordion, Center } from "@mantine/core"
-import { IconSquare, IconVectorSpline } from "@tabler/icons-react"
+import { ColorInput, Group, TextInput, Accordion, Indicator } from "@mantine/core"
+import { IconSquare, IconVectorSpline, IconX } from "@tabler/icons-react"
 
 import { StyleRuleMarkerIconSwitcher } from "./StyleRuleMarkerIconSwitcher"
 
 import { swatches } from "../scripts/swatches"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useDispatch } from "../context/MapStylingContext"
-import { toWellKnownName } from "../scripts/helpers"
+import { colorCodeToHEX, colorCodeToRGBA, opacityFromColorCode, toWellKnownName } from "../scripts/helpers"
 
 
 import { ActionIcon } from "@mantine/core"
 
 
-const colourFormats = [
-    { value: 'hex', label: 'HEX' },
-    { value: 'hexa', label: 'HEXA' },
-    { value: 'rgb', label: 'RGB' },
-    { value: 'rgba', label: 'RGBA' },
-    { value: 'hsl', label: 'HSL' },
-    { value: 'hsla', label: 'HSLA' }
-]
 
-export const StyleSymbolizer = ( { ruleIndex, symbolizerIndex, symbolizerObject } ) =>
+
+export const StyleSymbolizer = ( { ruleIndex, symbolizerIndex, symbolizerObject, } ) =>
 {
 
     const dispatch = useDispatch()
@@ -36,56 +29,68 @@ export const StyleSymbolizer = ( { ruleIndex, symbolizerIndex, symbolizerObject 
     const hasFill = ( symbolizerObject.Fill != null || graphicMark != null )
 
 
-    const [ colourFormat, setcolourFormat ] = useState( 'hexa' )
-
     function handleMarkChange( event )
     {
         dispatch( {
             type: "setSymbolizer",
             ruleIndex,
             symbolizerIndex,
-            symbolizer: {
-                ...symbolizerObject,
-                Graphic: {
-                    ...symbolizerObject.Graphic,
-                    Mark: {
-                        ...symbolizerObject.Graphic.Mark,
-                        WellKnownName: toWellKnownName( event.icon.replace( "Icon", "" ) )
-                    }
-                }
-            }
+            symbolizer: { ...symbolizerObject, Graphic: { ...symbolizerObject.Graphic, Mark: { ...symbolizerObject.Graphic.Mark, WellKnownName: toWellKnownName( event.icon.replace( "Icon", "" ) ) } } }
         } )
     }
     function handleStrokeChange( value )
     {
-        // setStrokeColour( value )
-        // onRuleChanged( { id, rule: { stroke: { color: strokeColour } } } )
+        dispatch( {
+            type: "setSymbolizer",
+            ruleIndex,
+            symbolizerIndex,
+            symbolizer: type === "PointSymbolizer" ?
+                { ...symbolizerObject, Graphic: { ...symbolizerObject.Graphic, Mark: { ...symbolizerObject.Graphic.Mark, Stroke: { ...graphicMark.Stroke, color: colorCodeToHEX( value ), opacity: opacityFromColorCode( value ) } } } } :
+                { ...symbolizerObject, Stroke: { ...symbolizerObject.Stroke, color: colorCodeToHEX( value ), opacity: opacityFromColorCode( value ) } }
+        } )
     }
     function handleFillChange( value )
     {
-        // setFillColour( value )
-        // onRuleChanged( { id, rule: { fill: { color: fillColour } } } )
+        dispatch( {
+            type: "setSymbolizer",
+            ruleIndex,
+            symbolizerIndex,
+            symbolizer: type === "PointSymbolizer" ?
+                { ...symbolizerObject, Graphic: { ...symbolizerObject.Graphic, Mark: { ...symbolizerObject.Graphic.Mark, Fill: { ...graphicMark.Fill, color: colorCodeToHEX( value ), opacity: opacityFromColorCode( value ) } } } } :
+                { ...symbolizerObject, Fill: { ...symbolizerObject.Fill, color: colorCodeToHEX( value ), opacity: opacityFromColorCode( value ) } }
+        } )
+    }
+    function handleRemoveSymbolizer()
+    {
+        dispatch( {
+            type: "removeSybolizer",
+            ruleIndex, symbolizerIndex
+        } )
     }
 
-    function handlecolourFormatChange( value ) { setcolourFormat( value ) }
+    const iconFill = colorCodeToRGBA( fill.color, fill.opacity )
+    const iconStroke = colorCodeToRGBA( stroke.color, stroke.opacity )
 
     return (
         <Accordion.Item value={`rules[${ruleIndex}].symbolizers[${symbolizerIndex}]`} >
 
             <Group justify="space-between" align="stretch">
 
+                {/* <Indicator position="top-start" label={type} size={16}> */}
                 <Group p="md">
-                    {( type === "PointSymbolizer" ) ? <StyleRuleMarkerIconSwitcher stroke={stroke.color} fill={fill.color} onIconChange={handleMarkChange} /> : null}
-                    {( type === "LineSymbolizer" ) ? <IconVectorSpline color={stroke.color} /> : null}
-                    {( type === "PolygonSymbolizer" ) ? <IconSquare color={stroke.color} fill={fill.color} /> : null}
-                    <ColorInput format={colourFormat} swatchesPerRow={10} swatches={swatches} defaultValue={stroke.color} onChangeEnd={handleStrokeChange} label="Stroke" />
-                    <ColorInput format={colourFormat} swatchesPerRow={10} swatches={swatches} defaultValue={fill.color} onChangeEnd={handleFillChange} label="Fill" disabled={!hasFill} />
-
-                    <Select data={colourFormats} defaultValue="hexa" allowDeselect={false} onChange={handlecolourFormatChange} label="Format" w="86px" />
+                    {( type === "PointSymbolizer" ) ? <StyleRuleMarkerIconSwitcher stroke={iconStroke} fill={iconFill} onIconChange={handleMarkChange} /> : null}
+                    {( type === "LineSymbolizer" ) ? <IconVectorSpline color={iconStroke} /> : null}
+                    {( type === "PolygonSymbolizer" ) ? <IconSquare color={iconStroke} fill={iconFill} /> : null}
+                    <ColorInput format="hexa" swatchesPerRow={10} swatches={swatches} defaultValue={stroke.color} onChangeEnd={handleStrokeChange} label="Stroke" />
+                    <ColorInput format="hexa" swatchesPerRow={10} swatches={swatches} defaultValue={fill.color} onChangeEnd={handleFillChange} label="Fill" disabled={!hasFill} />
                 </Group>
+                {/* </Indicator> */}
 
-                <Accordion.Control w="unset" style={{ flexGrow: 1 }}/>
-
+                <Accordion.Control w="unset" style={{ flexGrow: 1 }} />
+                {/* <Group>
+                    <ActionIcon color="red" onClick={handleRemoveSymbolizer} disabled={( symbolizerIndex === 0 )}><IconX /></ActionIcon>
+                    <ActionIcon color="red" onClick={handleRemoveSymbolizer} disabled={( symbolizerIndex === 0 )}><IconX /></ActionIcon>
+                </Group> */}
             </Group>
 
 

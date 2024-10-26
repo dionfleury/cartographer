@@ -33,10 +33,37 @@ export function RGBtoHEX( stcolorStringring, removeAlpha = true )
     const { isHEX, isRGB, isHSL, isHEXA, isRGBA, isHSLA } = determineColorFormats( colorString )
 }
 
-
-export function colorToHEX( colorString, removeAlpha = true )
+export function colorCodeToHEX( colorString, removeAlpha = true )
 {
+    const { isHEX, isRGB, isHSL, isHEXA, isRGBA, isHSLA } = determineColorFormats( colorString )
 
+    if ( isHEX || isHEXA )
+    {
+        if ( removeAlpha ) return colorString.substring( 0, 7 )
+        return colorString
+    }
+
+    const despaced = removeWhiteSpace( colorString )
+    const v1 = despaced.replace( /\w+\((\d+),\d+%*,\d+%*,*\d*\.*\d*\)/, "$1" )
+    const v2 = despaced.replace( /\w+\(\d+,(\d+)%*,\d+%*,*\d*\.*\d*\)/, "$1" )
+    const v3 = despaced.replace( /\w+\(\d+,\d+%*,(\d+)%*,*\d*\.*\d*\)/, "$1" )
+    const _alpha = ( despaced.replace( /\w+\(\d+,\d+%,\d+%,*(\d*\.*\d*)\)/, "$1" ) * 255 ).toString( 16 )
+
+    if ( isRGB || isRGBA )
+    {
+        const red = v1.toString( 16 )
+        const green = v2.toString( 16 )
+        const blue = v3.toString( 16 )
+        if ( removeAlpha ) return `#${red}${green}${blue}`
+        return `#${red}${green}${blue}${_alpha}`
+    }
+
+    if ( isHSL || isHSLA )
+    {
+        const [ red, green, blue ] = hsl2rgb( v1, v2, v3 )
+        if ( removeAlpha ) return `#${red.toString( 16 )}${green.toString( 16 )}${blue.toString( 16 )}`
+        return `#${red.toString( 16 )}${green.toString( 16 )}${blue.toString( 16 )}${_alpha}`
+    }
 }
 
 export function colorCodeToRGBA( colorString, alpha = 1 )
@@ -67,7 +94,6 @@ export function colorCodeToRGBA( colorString, alpha = 1 )
         const _alpha = despaced.replace( /\w+\(\d+,\d+%,\d+%,*(\d*\.*\d*)\)/, "$1" )
         return `rgba(${red}, ${green}, ${blue}, ${_alpha})`
     }
-
 }
 
 export function opacityFromColorCode( colorString )
@@ -99,8 +125,21 @@ function determineColorFormats( string )
         isHSL: isHSLFormat( despaced ),
         isHSLA: isHSLAFormat( despaced )
     }
-
 }
+
+
+/**
+ * 
+ * Converts hue, saturation, luminosity to red, green and blue values, adapted from: https://en.wikipedia.org/wiki/HSL_and_HSV#HSL_to_RGB_alternative
+ * 
+ * @param {Number} h Hue in degrees [0-360]
+ * @param {Number} s Saturation as fraction [0-1]
+ * @param {Number} l Luminosity as fraction [0-1]
+ * @returns {[r: number, g: number, b: number]}
+ * Returns an array with red, green and blue values from 0-255
+ * @example
+ * const [red, green, blue] = hsl2rgb(37, 0.75, 0.24)
+ */
 
 function hsl2rgb( h, s, l ) 
 {

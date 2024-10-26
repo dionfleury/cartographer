@@ -18,3 +18,7 @@
 .mantine-Accordion-item:where([data-active="true"]) {
   background-color: unset;
 }
+
+.mantine-Indicator-indicator {
+  --indicator-translate-x: 0%;
+}

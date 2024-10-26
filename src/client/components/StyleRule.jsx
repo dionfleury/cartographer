@@ -7,12 +7,24 @@ import { StyleSymbolizer } from "./StyleSymbolizer"
 import { IconPlus } from "@tabler/icons-react"
 
 
+import { useDispatch } from "../context/MapStylingContext"
 
-export const StyleRule = ( { ruleIndex, ruleObject } ) =>
+
+export const StyleRule = ( { ruleIndex, ruleObject, colorFormat } ) =>
 {
+
+    const dispatch = useDispatch()
 
     // const [ strokeColour, setStrokeColour ] = useState( '#FF0000FF' )
     // const [ fillColour, setFillColour ] = useState( '#64646440' )
+
+    function handleAddSymbolizer()
+    {
+        dispatch( {
+            type: "addSymbolizer",
+            ruleIndex
+        } )
+    }
 
 
     const symbolizers = ruleObject.Symbolizers.map( ( symbolizer, index ) => ( <StyleSymbolizer key={index} ruleIndex={ruleIndex} symbolizerIndex={index} symbolizerObject={symbolizer} /> ) )
@@ -26,7 +38,7 @@ export const StyleRule = ( { ruleIndex, ruleObject } ) =>
                 {symbolizers}
             </Accordion>
 
-            <ActionIcon color="green"><IconPlus /></ActionIcon>
+            <ActionIcon color="green" onClick={handleAddSymbolizer}><IconPlus /></ActionIcon>
 
         </Paper>
     )

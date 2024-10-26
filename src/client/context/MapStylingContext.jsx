@@ -38,6 +38,11 @@ function mapStylingReducer( state, action )
             case 'setSymbolizer':
                 draft.style.Rules[ action.ruleIndex ].Symbolizers[ action.symbolizerIndex ] = action.symbolizer
                 break
+
+            case 'addSymbolizer':
+                const rule = draft.style.Rules[ action.ruleIndex ]
+                rule.Symbolizers.push( rule.Symbolizers[ rule.Symbolizers.length - 1 ] )
+                break
             default:
                 return state
         }
