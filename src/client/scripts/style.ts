@@ -140,7 +140,9 @@ function generateFlatStyle( symbolizer ): FlatStyleLike
 export function JSLDtoOpenLayers( JSLDstyle )
 {
 
-    const rules = JSLDstyle.Rules.map( rule =>
+    const rules = JSLDstyle.NamedLayers[0].UserStyles[0].FeatureTypeStyles[0].Rules
+
+    const reversed = rules.map( rule =>
     {
         const reversed = [ ...rule.Symbolizers ].reverse() // Array is reversed to make render order more intuitive.
         return {
@@ -148,32 +150,11 @@ export function JSLDtoOpenLayers( JSLDstyle )
             style: reversed.map( generateFlatStyle )
         }
     } )
-    return rules
+    return reversed
 }
 
 export function JSLDtoSLD( JSLDStyle )
 {
-    // temporarily add header until better solution
-    const YSLDDoc = {
-        _type: "StyledLayerDescriptor",
-        NamedLayers: [
-            {
-                _type: "NamedLayer",
-                Name: "Layer Name",
-                // Description: "",
-                UserStyles: [
-                    {
-                        _type: "UserStyle",
-                        Name: "Style Name",
-                        Title: "Style Title",
-                        Abstract: "Style Abstract",
-                        // IsDefault: false,
-                        FeatureTypeStyles: [ JSLDStyle ]
-                    }
-                ]
-            }
-        ]
-    }
 
     function createNode( tagName, content: any = "" ) { return `<${tagName}>${content}</${tagName}>` }
     function buildXML( obj )
@@ -215,7 +196,7 @@ export function JSLDtoSLD( JSLDStyle )
         return nodeType ? `<${nodeType}>${xml}</${nodeType}>` : xml
     }
 
-    const SLDDoc = buildXML( YSLDDoc )
+    const SLDDoc = buildXML( JSLDStyle )
 
     return formatXML( SLDDoc )
     return SLDDoc

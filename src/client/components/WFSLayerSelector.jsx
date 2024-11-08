@@ -1,4 +1,4 @@
-import { Group, TextInput, Text, Fieldset, ActionIcon, Badge, Container, Input, InputBase, CheckIcon, Combobox, useCombobox, Stack } from "@mantine/core"
+import { Group, TextInput, Text, Fieldset, ActionIcon, Badge, Container, Input, InputBase, CheckIcon, Combobox, useCombobox, Stack, ScrollArea } from "@mantine/core"
 import { IconPlugConnected, IconX, IconCheck, IconLayersSubtract } from "@tabler/icons-react"
 
 import { useRef, useState } from "react"
@@ -131,9 +131,11 @@ export const WFSLayerSelector = ( { onLayerSelected } ) =>
 
                         <Combobox.Dropdown>
                             <Combobox.Search value={layerSearch} onChange={( event ) => setLayerSearch( event.currentTarget.value )} placeholder="Search layers" />
-                            <Combobox.Options>
-                                {options}
-                            </Combobox.Options>
+                            <ScrollArea.Autosize mah={350}>
+                                <Combobox.Options>
+                                    {options}
+                                </Combobox.Options>
+                            </ScrollArea.Autosize>
                         </Combobox.Dropdown>
                     </Combobox>
 

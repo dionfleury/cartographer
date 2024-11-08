@@ -43,28 +43,50 @@ export function generateDefaultStyleObject( geometryType )
     const defaultFill = { _type: "CssParameters", _prefix: "fill", color: "#646464", opacity: 0.25 }
     const defualtStroke = { _type: "CssParameters", _prefix: "stroke", color: "#FF0000", opacity: 1, width: 1.25 }
 
+    let defaultSymbolizer
+    if ( geometryType == "Point" ) defaultSymbolizer = { _type: "PointSymbolizer", Graphic: { Mark: { WellKnownName: "circle", Fill: defaultFill, Stroke: defualtStroke }, Opacity: 1, Size: 5, Rotation: 0 } }
+    else if ( geometryType == "Line" ) defaultSymbolizer = { _type: "LineSymbolizer", Stroke: defualtStroke }
+    else if ( geometryType == "Polygon" ) defaultSymbolizer = { _type: "PolygonSymbolizer", Stroke: defualtStroke, Fill: defaultFill }
+
     const baseStyle = {
-        _type: "FeatureTypeStyle",
-        // Name: "",
-        // Title: "",
-        // Abstract: "",
-        // FeatureTypeName: "",
-        Rules: [
+        _type: "StyledLayerDescriptor",
+        NamedLayers: [
             {
-                _type: "Rule",
-                Name: "Rule Name",
-                Title: "Rule Title",
-                // Abstract: "",
-                Filter: null,
-                // MinScaleDenominator: null,
-                // MaxScaleDenominator: null,
-                // FeatureTypeName: "",
-                Symbolizers: []
+                _type: "NamedLayer",
+                Name: "Layer Name",
+                // Description: "",
+                UserStyles: [
+                    {
+                        _type: "UserStyle",
+                        Name: "Style Name",
+                        Title: "Style Title",
+                        Abstract: "Style Abstract",
+                        // IsDefault: false,
+                        FeatureTypeStyles: [ {
+                            _type: "FeatureTypeStyle",
+                            // Name: "",
+                            // Title: "",
+                            // Abstract: "",
+                            // FeatureTypeName: "",
+                            Rules: [
+                                {
+                                    _type: "Rule",
+                                    Name: "Rule Name",
+                                    Title: "Rule Title",
+                                    // Abstract: "",
+                                    Filter: null,
+                                    // MinScaleDenominator: null,
+                                    // MaxScaleDenominator: null,
+                                    // FeatureTypeName: "",
+                                    Symbolizers: [defaultSymbolizer]
+                                }
+                            ]
+                        } ]
+                    }
+                ]
             }
         ]
     }
-    if ( geometryType == "Point" ) baseStyle.Rules[ 0 ].Symbolizers[ 0 ] = { _type: "PointSymbolizer", Graphic: { Mark: { WellKnownName: "circle", Fill: defaultFill, Stroke: defualtStroke }, Opacity: 1, Size: 5, Rotation: 0 } }
-    else if ( geometryType == "Line" ) baseStyle.Rules[ 0 ].Symbolizers[ 0 ] = { _type: "LineSymbolizer", Stroke: defualtStroke }
-    else if ( geometryType == "Polygon" ) baseStyle.Rules[ 0 ].Symbolizers[ 0 ] = { _type: "PolygonSymbolizer", Stroke: defualtStroke, Fill: defaultFill }
+
     return baseStyle
 }

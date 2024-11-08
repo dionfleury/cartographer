@@ -32,7 +32,9 @@ export const StylingPanel = ( { layer, onStyleChanged } ) =>
     useEffect( () =>
     {
         if ( Object.keys( dataSource ).length == 0 ) return
-        const elements = style.Rules.map( ( rule, index ) =>
+        const rules = style.NamedLayers[0].UserStyles[0].FeatureTypeStyles[0].Rules
+        console.log(rules)
+        const elements = rules.map( ( rule, index ) =>
         {
             return ( <StyleRule key={index} ruleIndex={index} ruleObject={rule} /> )
         } )
