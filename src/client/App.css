@@ -22,3 +22,15 @@
 .mantine-Indicator-indicator {
   --indicator-translate-x: 0%;
 }
+
+.match-case-switch .mantine-Switch-body {
+  flex-direction: column;
+}
+.match-case-switch .mantine-Switch-labelWrapper {
+  line-height: unset;
+}
+
+.match-case-switch .mantine-Switch-label {
+  font-size: var(--input-label-size, var(--mantine-font-size-sm));
+  font-weight: 500;
+}

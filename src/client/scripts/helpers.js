@@ -184,3 +184,34 @@ export function formatXML( xmlString )
 }
 
 
+export function assignDatatypeColor( datatypeString )
+{
+    switch ( datatypeString.toLowerCase() )
+    {
+        case "boolean":
+            return "red"
+        case "string":
+        case "char":
+            return "pink"
+        case "int":
+        case "number":
+            return "cyan"
+        default: return ""
+    }
+
+}
+
+export function SLDBooleanOperatorToOL( operatorString )
+{
+    switch ( operatorString )
+    {
+        case "PropertyIsEqualTo": return "=="
+        case "PropertyIsNotEqualTo": return "!="
+        case "PropertyIsLessThan": return "<"
+        case "PropertyIsLessThanOrEqualTo": return "<="
+        case "PropertyIsGreaterThan": return ">"
+        case "PropertyIsGreaterThanOrEqualTo": return ">="
+        case "PropertyIsLike": return "=="
+        case "PropertyIsNull": return "=="
+    }
+}

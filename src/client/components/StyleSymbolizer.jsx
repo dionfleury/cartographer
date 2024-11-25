@@ -1,4 +1,4 @@
-import { ColorInput, Group, TextInput, Accordion, Indicator, NumberInput } from "@mantine/core"
+import { ColorInput, Group, TextInput, Accordion, NumberInput } from "@mantine/core"
 import { IconSquare, IconVectorSpline, IconX, IconArrowMoveDown, IconArrowMoveUp } from "@tabler/icons-react"
 
 import { StyleRuleMarkerIconSwitcher } from "./StyleRuleMarkerIconSwitcher"
@@ -89,39 +89,38 @@ export const StyleSymbolizer = ( { ruleIndex, symbolizerIndex, lastSymbolizerInd
     return (
         <Accordion.Item value={`rules[${ruleIndex}].symbolizers[${symbolizerIndex}]`} >
 
-            <Group justify="space-between" align="stretch" w="100%">
+                <Group justify="space-between" align="stretch" w="100%">
 
-                {/* <Indicator position="top-start" label={type} size={16}> */}
-                <Group p="md" pr="0" justify="space-between" wrap="nowrap" w="calc(100% - 64px)">
-                    <Group gap="xs">
-                        {( type === "PointSymbolizer" ) ? <StyleRuleMarkerIconSwitcher stroke={iconStroke} fill={iconFill} icon={graphicMark.WellKnownName} onIconChange={handleMarkChange} /> : null}
-                        {( type === "LineSymbolizer" ) ? <IconVectorSpline style={{boxSizing: "content-box", padding: "10px"}} color={iconStroke} /> : null}
-                        {( type === "PolygonSymbolizer" ) ? <IconSquare style={{boxSizing: "content-box", padding: "10px"}}  color={iconStroke} fill={iconFill} /> : null}
-                        <Group>
-                            <ColorInput format="hexa" w="144px" swatchesPerRow={10} swatches={swatches} value={fill.color} onChangeEnd={handleFillColorChange} label="Fill" disabled={!hasFill} />
-                            <ColorInput format="hexa" w="144px" swatchesPerRow={10} swatches={swatches} value={stroke.color} onChangeEnd={handleStrokeColorChange} label="Stroke" />
+                    {/* <Indicator position="top-start" label={type} size={16}> */}
+                    <Group p="md" pr="0" justify="space-between" wrap="nowrap" w="calc(100% - 64px)">
+                        <Group gap="xs">
+                            {( type === "PointSymbolizer" ) ? <StyleRuleMarkerIconSwitcher stroke={iconStroke} fill={iconFill} icon={graphicMark.WellKnownName} onIconChange={handleMarkChange} /> : null}
+                            {( type === "LineSymbolizer" ) ? <IconVectorSpline style={{ boxSizing: "content-box", padding: "10px" }} color={iconStroke} /> : null}
+                            {( type === "PolygonSymbolizer" ) ? <IconSquare style={{ boxSizing: "content-box", padding: "10px" }} color={iconStroke} fill={iconFill} /> : null}
+                            <Group>
+                                <ColorInput format="hexa" w="144px" swatchesPerRow={10} swatches={swatches} value={fill.color} onChangeEnd={handleFillColorChange} label="Fill" disabled={!hasFill} />
+                                <ColorInput format="hexa" w="144px" swatchesPerRow={10} swatches={swatches} value={stroke.color} onChangeEnd={handleStrokeColorChange} label="Stroke" />
+                            </Group>
                         </Group>
-                    </Group>
-                    <Group py="md" gap="xs">
-                        <ActionIcon color="blue" onClick={handleMoveSymbolizerUp} disabled={( symbolizerIndex === 0 )}><IconArrowMoveUp /></ActionIcon>
-                        <ActionIcon color="blue" onClick={handleMoveSymbolizerDown} disabled={( symbolizerIndex === lastSymbolizerIndex )}><IconArrowMoveDown /></ActionIcon>
-                        <ActionIcon color="red" onClick={handleRemoveSymbolizer} disabled={( symbolizerIndex === 0 )}><IconX /></ActionIcon>
-                    </Group>
+                        <Group py="md" gap="xs">
+                            <ActionIcon color="blue" onClick={handleMoveSymbolizerUp} disabled={( symbolizerIndex === 0 )}><IconArrowMoveUp /></ActionIcon>
+                            <ActionIcon color="blue" onClick={handleMoveSymbolizerDown} disabled={( symbolizerIndex === lastSymbolizerIndex )}><IconArrowMoveDown /></ActionIcon>
+                            <ActionIcon color="red" onClick={handleRemoveSymbolizer} disabled={( symbolizerIndex === 0 )}><IconX /></ActionIcon>
+                        </Group>
 
 
+
+                    </Group>
+                    {/* </Indicator> */}
+
+                    <Accordion.Control w="48px" style={{ flexGrow: 1 }} />
 
                 </Group>
-                {/* </Indicator> */}
-
-                <Accordion.Control w="48px" style={{ flexGrow: 1 }} />
-
-            </Group>
 
 
             <Accordion.Panel>
                 <Group>
-                    <TextInput label="Rule Name" placeholder="Legend Entry" ></TextInput>
-                    {type === "PointSymbolizer" ? <NumberInput allowNegative={false} allowLeadingZeros={false} decimalScale={3} defaultValue={graphic.Size} fixedDecimalScale w="98px" label="Size" onChange={handleMarkSizeChange}/> : null}
+                    {type === "PointSymbolizer" ? <NumberInput allowNegative={false} allowLeadingZeros={false} decimalScale={3} defaultValue={graphic.Size} fixedDecimalScale w="98px" label="Size" onChange={handleMarkSizeChange} /> : null}
                     <NumberInput allowNegative={false} allowLeadingZeros={false} decimalScale={3} defaultValue={stroke.width} fixedDecimalScale w="98px" label="Stroke Width" onChange={handleStrokeWidthChange} />
                 </Group>
 

@@ -2,7 +2,7 @@ import { Circle, RegularShape, Fill, Stroke, Style } from 'ol/style.js'
 
 import { FlatCircle, FlatShape, FlatFill, FlatStroke, FlatStyle, FlatStyleLike } from 'ol/style/flat'
 
-import { colorCodeToRGBA, degreesToRadians, formatXML, opacityFromColorCode, pythagorasDiagonalFromSide, radiusToTriangleBase } from './helpers'
+import { colorCodeToRGBA, degreesToRadians, formatXML, opacityFromColorCode, pythagorasDiagonalFromSide, radiusToTriangleBase, SLDBooleanOperatorToOL } from './helpers'
 
 
 export function generateSLDStyle( rules, version )
@@ -140,15 +140,20 @@ function generateFlatStyle( symbolizer ): FlatStyleLike
 export function JSLDtoOpenLayers( JSLDstyle )
 {
 
-    const rules = JSLDstyle.NamedLayers[0].UserStyles[0].FeatureTypeStyles[0].Rules
+    const rules = JSLDstyle.NamedLayers[ 0 ].UserStyles[ 0 ].FeatureTypeStyles[ 0 ].Rules
 
     const reversed = rules.map( rule =>
     {
         const reversed = [ ...rule.Symbolizers ].reverse() // Array is reversed to make render order more intuitive.
-        return {
-            // filter: undefined, //TODO: Implement filter
-            style: reversed.map( generateFlatStyle )
+        if ( rule.Filter != null )
+        {
+            return {
+                // filter: rule.Filter.matchCase ? [ SLDBooleanOperatorToOL( rule.Filter._type ), [ 'get', rule.Filter.PropertyName ], rule.Filter.Literal ] : [ SLDBooleanOperatorToOL( rule.Filter._type ), [ 'get', rule.Filter.PropertyName ], rule.Filter.Literal ],
+                filter: [ SLDBooleanOperatorToOL( rule.Filter._type ), [ 'get', rule.Filter.PropertyName ], rule.Filter.Literal ],
+                style: reversed.map( generateFlatStyle )
+            }
         }
+        return { style: reversed.map( generateFlatStyle ) }
     } )
     return reversed
 }
@@ -162,26 +167,33 @@ export function JSLDtoSLD( JSLDStyle )
         if ( typeof obj !== "object" || obj === null ) return obj
         if ( Array.isArray( obj ) ) return obj.map( item => buildXML( item ) ).join( "" )
 
-        const nodeType = obj._type || ""
+        let nodeType = obj._type || ""
         let xml = ""
 
         let namespaceInfo = `\r\nversion="1.0.0" \r\nxsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd"`
         namespaceInfo += `\r\nxmlns="http://www.opengis.net/sld" \r\nxmlns:ogc="http://www.opengis.net/ogc" \r\nxmlns:xlink="http://www.w3.org/1999/xlink" \r\nxmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"`
 
-        for ( const [ key, value ] of Object.entries( obj ) )
+        for ( let [ key, value ] of Object.entries( obj ) )
         {
-            if ( key === "_type" ) continue // Skip "_type" key as it represents the XML element name
+            if ( key === "_type" || key === "_attrib" ) continue // Skip "_type" key as it represents the XML element name
 
             // Recursive handling for child objects or arrays
             if ( [ "NamedLayers", "UserStyles", "FeatureTypeStyles", "Rules", "Symbolizers" ].includes( key ) ) xml += buildXML( value )
             else if ( typeof value === "object" )
             {
                 const childXML = buildXML( value )
+                if ( key === "Filter" ) key = "ogc:" + key
                 if ( childXML ) xml += createNode( key, childXML )
             }
             else xml += createNode( key, value )
         }
 
+        console.log( nodeType )
+
+
+        if ( obj._attrib != null ) return [
+            `<${nodeType} ${obj._attrib}>${xml}</${nodeType}>`
+        ]
         if ( nodeType === "CssParameters" && obj._prefix === "fill" ) return [
             `<CssParameter name="fill">${obj.color}</CssParameter>`,
             `<CssParameter name="fill-opacity">${obj.opacity}</CssParameter>`,
