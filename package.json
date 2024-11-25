@@ -8,7 +8,7 @@
     "start": "cross-env NODE_ENV=production node src/server/main.js",
     "build": "vite build",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@mantine/core": "^7.13.3",
