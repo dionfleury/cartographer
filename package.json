@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "nodemon src/server/main.js -w src/server",
     "start": "cross-env NODE_ENV=production node src/server/main.js",
-    "build": "vite build"
+    "build": "vite build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "@mantine/core": "^7.13.3",
@@ -29,6 +31,7 @@
     "@types/react-dom": "^18.0.10",
     "@vitejs/plugin-react": "^4.2.0",
     "autoprefixer": "^10.4.20",
+    "gh-pages": "^6.2.0",
     "nodemon": "^3.0.1",
     "postcss": "^8.4.47",
     "postcss-preset-mantine": "^1.17.0",
