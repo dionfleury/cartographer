@@ -1,8 +1,9 @@
 import reactLogo from "../assets/react.svg"
 
-import { Title, Group, Flex } from "@mantine/core"
+import { Title, Group, Flex, ActionIcon } from "@mantine/core"
 
 import { ThemeSwitcher } from "./ThemeSwitcher"
+import { IconBrandGithub } from "@tabler/icons-react"
 
 
 export const Header = () =>
@@ -15,7 +16,10 @@ export const Header = () =>
                     <Title order={1}>Cartographer</Title>
                 </Group>
 
-                <Group><ThemeSwitcher /></Group>
+                <Group>
+                    <ActionIcon component="a" href="https://github.com/dionfleury/cartographer" variant="default" size="lg"><IconBrandGithub /></ActionIcon>
+                    <ThemeSwitcher />
+                </Group>
             </Flex>
         </div>
     )
